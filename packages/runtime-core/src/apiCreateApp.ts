@@ -174,6 +174,7 @@ export type CreateAppFunction<HostElement> = (
 
 let uid = 0
 
+// 
 export function createAppAPI<HostElement>(
   render: RootRenderFunction,
   hydrate?: RootHydrateFunction
@@ -189,6 +190,7 @@ export function createAppAPI<HostElement>(
 
     let isMounted = false
 
+    // 声明一个App实例
     const app: App = (context.app = {
       _uid: uid++,
       _component: rootComponent as ConcreteComponent,
@@ -274,12 +276,16 @@ export function createAppAPI<HostElement>(
         return app
       },
 
+      // 挂载函数
+      // app.mount('#app')
       mount(
-        rootContainer: HostElement,
+        rootContainer: HostElement, // 宿主元素
         isHydrate?: boolean,
         isSVG?: boolean
       ): any {
+        // 首次执行，并未挂载
         if (!isMounted) {
+          // 创建根组件的Vnode
           const vnode = createVNode(
             rootComponent as ConcreteComponent,
             rootProps
@@ -298,6 +304,7 @@ export function createAppAPI<HostElement>(
           if (isHydrate && hydrate) {
             hydrate(vnode as VNode<Node, Element>, rootContainer as any)
           } else {
+            // 渲染vnode-> dom -> rootContainer
             render(vnode, rootContainer, isSVG)
           }
           isMounted = true
